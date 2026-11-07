@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VIRAL ARCADE - 10 Addictive Retro Cyber Mini Games</title>
+  <meta name="description" content="Play 10 viral mini-games in your browser with zero installation. Cyber Flap, Neon 2048, Cyber Runner, Blade Master, Tower Stacker, and more!">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/games.css">
+</head>
+<body>
+  <!-- Ambient Particle Starfield & Confetti Canvases -->
+  <canvas id="arcade-bg-canvas"></canvas>
+  <canvas id="confetti-canvas"></canvas>
+  <div class="scanlines-overlay"></div>
+
+  <!-- Notification Toasts Container -->
+  <div id="arcade-toast-container"></div>
+
+  <!-- Universal Modal Backdrop -->
+  <div class="arcade-modal-backdrop" id="arcade-modal">
+    <div class="arcade-modal-box">
+      <button class="modal-close-btn" id="arcade-modal-close">✕</button>
+      <div id="arcade-modal-body"></div>
+    </div>
+  </div>
+
+  <div class="arcade-container">
+    <!-- Header -->
+    <header class="arcade-header">
+      <div class="logo-wrapper" onclick="if(window.arcadeHub) window.arcadeHub.exitToLobby();">
+        <span class="logo-icon">🕹️</span>
+        <div class="logo-text">
+          <span class="neon-glow-cyan">VIRAL</span> <span class="neon-glow-pink">ARCADE</span>
+        </div>
+      </div>
+
+      <!-- Player HUD -->
+      <div class="header-profile-hud">
+        <div class="hud-pill coins-pill" title="Arcade Coins">
+          <span>🪙</span> <strong id="global-coins-display">100</strong>
+        </div>
+
+        <div class="hud-pill level-pill" title="Arcade Level">
+          <span class="level-badge" id="global-level-display">LVL 1</span>
+          <div class="level-xp-bar">
+            <div class="level-xp-fill" id="global-xp-fill"></div>
+          </div>
+        </div>
+
+        <div class="header-action-btns">
+          <button class="arcade-icon-btn" id="btn-open-shop" title="Theme Shop">🎨 <span>SHOP</span></button>
+          <button class="arcade-icon-btn" id="btn-open-achievements" title="Achievements">🏆 <span>TROPHIES</span></button>
+          <button class="arcade-icon-btn" id="btn-open-stats" title="Personal Records">📊 <span>STATS</span></button>
+          <button class="arcade-icon-btn audio-toggle-btn" title="Toggle Sound">🔊 <span>SOUND</span></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Arcade Lobby -->
+    <main id="arcade-lobby">
+      <!-- Daily Challenge Banner -->
+      <section class="daily-challenge-banner" id="daily-challenge-card">
+        <div class="daily-content">
+          <span class="daily-tag">🔥 DAILY 2X CHALLENGE</span>
+          <h2 id="daily-game-title">🗡️ Blade Master</h2>
+          <p id="daily-game-desc">Earn 2x Arcade Coins on Blade Master today only! Break your record to unlock extra bonuses.</p>
+        </div>
+        <div class="daily-actions">
+          <button class="arcade-btn-primary" id="daily-play-btn">PLAY EVENT ▶</button>
+          <button class="arcade-btn-secondary" id="btn-surprise-me">🎲 SURPRISE ME!</button>
+        </div>
+      </section>
+
+      <!-- Search & Filters -->
+      <div class="arcade-controls-bar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="arcade-search-input" placeholder="Search games (e.g. runner, puzzle, reflex)...">
+        </div>
+
+        <div class="category-tabs">
+          <button class="cat-tab active" data-cat="all">ALL GAMES (10)</button>
+          <button class="cat-tab" data-cat="reflex">⚡ REFLEX</button>
+          <button class="cat-tab" data-cat="puzzle">🧩 PUZZLE</button>
+          <button class="cat-tab" data-cat="endless">🏃 ENDLESS</button>
+          <button class="cat-tab" data-cat="timing">⏱️ TIMING</button>
+          <button class="cat-tab" data-cat="retro">👾 RETRO</button>
+        </div>
+      </div>
+
+      <!-- Games Grid (Populated dynamically) -->
+      <div class="arcade-games-grid" id="arcade-games-grid"></div>
+    </main>
+
+    <!-- Game Arena Viewport (Shown when playing a game) -->
+    <section id="arcade-game-arena" style="display: none;">
+      <div class="game-arena-topbar">
+        <div class="arena-top-left">
+          <button class="arcade-btn-mini" id="game-arena-back-btn">← ARCADE</button>
+          <h2 class="arena-game-title" id="arena-game-title">Game Title</h2>
+        </div>
+        <div class="arena-game-best" id="arena-game-best">RECORD: 0</div>
+        <div class="arena-top-actions">
+          <button class="arcade-btn-mini" id="game-arena-restart-btn" title="Restart Round">↺ RESTART</button>
+          <button class="arcade-btn-mini" id="game-arena-share-btn" title="Challenge Friends">🚀 SHARE</button>
+          <button class="arcade-btn-mini audio-toggle-btn" title="Toggle Sound">🔊</button>
+          <button class="arcade-btn-mini" id="game-arena-fs-btn" title="Toggle Fullscreen">⛶</button>
+        </div>
+      </div>
+
+      <!-- Game Canvas/DOM Container -->
+      <div class="arena-canvas-container" id="arena-canvas-container"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="arcade-footer">
+      <p>⚡ <strong>VIRAL ARCADE</strong> — 10 High-Octane Mini Games Engineered with HTML5 Canvas &amp; Procedural Web Audio</p>
+      <p>Instant play on Desktop &amp; Mobile • No installs • Challenge your friends!</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="scripts/audio.js"></script>
+  <script src="scripts/profile.js"></script>
+  <script src="scripts/dictionary.js"></script>
+  <script src="scripts/games/cyberflap.js"></script>
+  <script src="scripts/games/neon2048.js"></script>
+  <script src="scripts/games/cyberrunner.js"></script>
+  <script src="scripts/games/towerstack.js"></script>
+  <script src="scripts/games/blademaster.js"></script>
+  <script src="scripts/games/neonsnake.js"></script>
+  <script src="scripts/games/wordblitz.js"></script>
+  <script src="scripts/games/reflexaim.js"></script>
+  <script src="scripts/games/simonpulse.js"></script>
+  <script src="scripts/games/colorflood.js"></script>
+  <script src="scripts/arcade.js"></script>
+</body>
+</html>
